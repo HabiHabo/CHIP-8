@@ -1,0 +1,1 @@
+C:\Users\karto\RustroverProjects\Chip8Emulator\desktop\target\debug\desktop.exe: C:\Users\karto\RustroverProjects\Chip8Emulator\chip8_core\src\lib.rs C:\Users\karto\RustroverProjects\Chip8Emulator\desktop\src\main.rs
