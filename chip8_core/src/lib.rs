@@ -322,7 +322,24 @@ impl Emu {
                 self.ram[self.i_reg as usize] = hundred;
                 self.ram[(self.i_reg + 1) as usize] = ten;
                 self.ram[(self.i_reg + 2) as usize] = one;
+            },
+            (0xF, _, 5, 5) => {
+                let x = digit2 as usize;
+                let vi = self.i_reg as usize;
+
+                for v_iterate in 0..=x {
+                    self.ram[vi + v_iterate] = self.v_reg[v_iterate];
+                }
+            },
+            (0xF, _, 6, 5) => {
+                let x = digit2 as usize;
+                let vi = self.i_reg as usize;
+
+                for v_iterate in 0..=x {
+                    self.v_reg[v_iterate] = self.ram[vi + v_iterate];
+                }
             }
+
 
             (_, _, _, _) => unimplemented!("Unimplemented opcode: {}", op),
         }
