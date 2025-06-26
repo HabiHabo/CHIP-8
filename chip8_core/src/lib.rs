@@ -54,7 +54,7 @@ pub struct Emu {
     st: u8,
 }
 
-const START_ADDR: u16 = 0x200;
+const START_ADDR: u16 = 0x200; //Standard starting adress for most CHIP-8 games
 
 impl Default for  Emu {
     fn default() -> Self {
@@ -103,6 +103,22 @@ impl Emu {
         self.execute(op);
     }
 
+    pub fn get_display(&self) -> &[bool] {
+        &self.screen
+    }
+
+    pub fn keypress(&mut self, key: usize, pressed: bool) {
+        self.keys[key] = pressed;
+    }
+
+    pub fn load(&mut self, data: &[u8]){ //Slightly less efficient than guide version
+        let iterate = data.len() as usize;
+        let start = START_ADDR as usize;
+        for i in 0..iterate {
+            self.ram[start + i] = data[i];
+        }
+    }
+
     fn execute(&mut self, op: u16) {
         let digit1 = (op & 0xF000) >> 12;
         let digit2 = (op & 0x0F00) >> 8;
@@ -135,7 +151,7 @@ impl Emu {
             (0x5, _, _, 0) => { //Skip if VX == VY
                 let x = digit2 as usize;
                 let y = digit3 as usize;
-                if (self.v_reg[x] == self.v_reg[y]) {
+                if self.v_reg[x] == self.v_reg[y] {
                     self.pc += 2;
                 }
             },
@@ -213,7 +229,7 @@ impl Emu {
             (0x9, _, _, 0) => {
                 let x = digit2 as usize;
                 let y = digit3 as usize;
-                if (self.v_reg[x] != self.v_reg[y]) {
+                if self.v_reg[x] != self.v_reg[y] {
                     self.pc += 2;
                 }
             },
@@ -361,7 +377,7 @@ impl Emu {
             self.dt -= 1;
         }
         if self.st > 0 {
-            if (self.st == 1){
+            if self.st == 1{
                 //TODO Sound
             }
             self.st -= 1;
