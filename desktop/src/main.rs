@@ -1,4 +1,3 @@
-use std::env;
 use chip8_core::*;
 use sdl2::event::Event;
 use std::fs::File;
@@ -11,17 +10,26 @@ use sdl2::video::Window;
 
 use sdl2::keyboard::Keycode;
 
+use rfd::FileDialog;
+
 const SCALE: u32 = 15;
 const WINDOW_WIDTH: u32 = (SCREEN_WIDTH as u32) * SCALE;
 const WINDOW_HEIGHT: u32 = (SCREEN_HEIGHT as u32) * SCALE;
 const TICKS_PER_FRAME: usize = 10;
 
 fn main() {
-    let args: Vec<_> = env::args().collect();
-    if args.len() != 2 {
-        println!("Usage: cargo run path/to/game");
-        return;
-    }
+    let filepath = FileDialog::new()
+        .add_filter("CHIP-8 ROMs", &["ch8"])
+        .set_directory("/")
+        .pick_file();
+
+    let path = match filepath {
+        Some(path) => path,
+        None => {
+            println!("No such file or directory!");
+            return;
+        }
+    };
 
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
@@ -36,7 +44,7 @@ fn main() {
     canvas.present();
 
     let mut chip8 = Emu::new();
-    let mut rom = File::open(&args[1]).expect("Did not find file");
+    let mut rom = File::open(&path).expect("Did not find file");
     let mut buffer = Vec::new();
     rom.read_to_end(&mut buffer).unwrap();
     chip8.load(&buffer);
