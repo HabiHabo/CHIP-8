@@ -1,0 +1,4 @@
+[target.x86_64-pc-windows-msvc]
+rustflags = [
+    "-L", "C:\\Users\\karto\\Documents\\SDL2-2.32.2\\lib\\x64"
+]
