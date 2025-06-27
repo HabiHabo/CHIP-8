@@ -5,5 +5,5 @@ edition = "2024"
 
 [dependencies]
 chip8_core = { path = "../chip8_core" }
-sdl2 = "^0.34.3"
+sdl2 = { version = "0.34", features = ["static-link"] }
 rfd = "*"
